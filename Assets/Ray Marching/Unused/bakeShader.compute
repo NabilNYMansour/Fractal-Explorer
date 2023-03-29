@@ -1,0 +1,80 @@
+#pragma kernel CSMain
+#define SLOPE_EPS 0.00001
+
+RWStructuredBuffer<float4> SDFBuffer;
+int SizeH;
+int Size;
+int Size2;
+
+float SDFsphere(float3 p, float r) {
+    return length(p)-r;
+}
+
+float SDFbox(float3 p, float3 b)
+{
+    float3 q = abs(p) - b;
+    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+}
+
+float MengerSponge(float3 pos, float os, int details) {
+    float b = SDFbox(pos, float3(os, os, os));
+    float s = os / 3.;
+
+    float c = os/3.;
+    float3 pmod;
+
+    for (int i = 0; i < details; i++) {
+        s /= 3.;
+        pmod = fmod(abs(pos + c), c * 2.) - c;
+        b = max(b, -SDFbox(pmod, float3(os, s, s)));
+        b = max(b, -SDFbox(pmod, float3(s, os, s)));
+        b = max(b, -SDFbox(pmod, float3(s, s, os)));
+        c /= 3.;
+    }
+
+    s = os / 3.;
+    os += 1;
+
+    b = max(b, -SDFbox(pos, float3(os, s, s)));
+    b = max(b, -SDFbox(pos, float3(s, os, s)));
+    b = max(b, -SDFbox(pos, float3(s, s, os)));
+
+    return b;
+}
+
+float GetHit(float3 p) {
+    // float s = ceil(float(Size) / 2) - 2;
+    float s = 0.9;
+    return MengerSponge(p, s, 3);
+    // return SDFsphere(p, s);
+}
+
+float3 GetNormal(float3 pos)
+{
+    float3 n = float3(0,0,0);
+    float3 e;
+    for (int i = 0; i < 4; i++)
+    {
+        e = 0.5773 * (2.0 * float3((((i + 3) >> 1) & 1), ((i >> 1) & 1), (i & 1)) - 1.0);
+        n += e * GetHit(pos + e * SLOPE_EPS);
+    }
+    return normalize(n);
+}
+
+[numthreads(10,10,10)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    uint z = id.z * Size2;
+    uint y = id.y * Size;
+    uint x = id.x;
+
+    float offset = float(Size)/2.;
+
+    // float3 p = float3(id - offset);
+    float3 p = float3(id - offset)/SizeH;
+
+    float dis = GetHit(p);
+    float3 normal = GetNormal(p);
+
+    SDFBuffer[x+y+z] = float4(dis, normal.x, normal.y, normal.z);
+}

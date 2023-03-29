@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.cps643lab4.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "C:\\Users\\nabil\\OneDrive\\Documents\\Unity Projects\\VR_Shader_Test\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "CPS643Lab4 [Testing]"
+        }
+      }
+    }
+  ]
+}
