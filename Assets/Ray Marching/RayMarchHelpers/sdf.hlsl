@@ -134,7 +134,7 @@ float OrbitTrapValue(float3 p, float s) {
 // #define Y_COL 2 // color along the Y of the shape
 // #define Z_COL 3 // color along the Z of the shape
 
-Hit MengerSpongeFolded(float3 pos, float os, int details, float3 playerPos) {
+Hit MengerSpongeFolded(float3 pos, float os, int details) {
     // Hit b = HitInit(0, M_COL);
     Hit b = HitInit(SDFbox(pos, float3(os*10, os*10, os*10)), M_COL);
 
@@ -208,42 +208,3 @@ float4 c = z;
     return length(z.xyz) / abs(z.w);
 }
 /*---------------------------------------------*/
-
-
-// Hit MengerSpongeFolded(float3 pos, float os, int details, float3 actualPos, float foldParam) {
-//     Hit b = HitInit(SDFbox(pos, float3(os, os, os))-os/50, M_COL);
-//     float s = os / 3.;
-
-//     float c = os/3.;
-//     float3 pmod;
-
-//     int i1 = int(float(details)/2);
-
-//     // foldParam = 0;
-
-//     for (int i = 0; i < details; i++) {
-//         i1++;
-
-//         // pos = rotateX((PI+foldParam*1)/(i1*2), pos);
-//         // pos = rotateY((PI+foldParam*2)/(i1*2), pos);
-//         // pos = rotateZ((PI+foldParam*3)/(i1*2), pos);
-
-//         s /= 3.;
-//         pmod = fmod(abs(pos + c), c * 2.) - c;
-//         b = dHit(b, HitInit(SDFbox(pmod, float3(os, s, s)), X_COL));
-//         b = dHit(b, HitInit(SDFbox(pmod, float3(s, os, s)), Y_COL));
-//         b = dHit(b, HitInit(SDFbox(pmod, float3(s, s, os)), Z_COL));
-//         c /= 3.;
-//     }
-
-//     s = os / 3.;
-//     os += 1;
-
-//     b = dHit(b, HitInit(SDFbox(pos, float3(os, s, s)), X_COL));
-//     b = dHit(b, HitInit(SDFbox(pos, float3(s, os, s)), Y_COL));
-//     b = dHit(b, HitInit(SDFbox(pos, float3(s, s, os)), Z_COL));
-
-//     // b.dis += os/100;
-
-//     return b;
-// }

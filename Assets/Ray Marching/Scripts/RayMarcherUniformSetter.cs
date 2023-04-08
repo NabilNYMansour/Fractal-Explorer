@@ -4,20 +4,14 @@ using UnityEngine;
 public class RayMarcherUniformSetter : MonoBehaviour
 {
     public Material material;
-    public Light pointLight;
-    public Transform player;
+    public Transform pointLight;
 
     void Update()
     {
         if (material != null && pointLight != null)
         {
-            material.SetVector("_LightPos", pointLight.transform.position);
-            material.SetVector("_LightCol", pointLight.color);
-            material.SetVector("_PlayerPos", player.position);
+            material.SetVector("_LightPos", pointLight.position);
             GetComponent<MeshRenderer>().material = material;
-        } else
-        {
-            Debug.Log("TEST");
         }
     }
 }
