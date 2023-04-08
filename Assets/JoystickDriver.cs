@@ -21,14 +21,7 @@ public class JoystickDriver : MonoBehaviour
     private float angle;
     public bool selected = false;
 
-     public enum InputType
-    {
-        NONE,       // == 0
-        STEER,     // == 1
-        POWER,     // == 2
-    }
 
-    private InputType inputType = InputType.NONE;
 
     // Start is called before the first frame update
     void Start()
@@ -66,7 +59,6 @@ public class JoystickDriver : MonoBehaviour
 
     private void OnTriggerStay(Collider other) {
         if (gripClick.GetStateDown(handType) && other.name == "SteerTop"){
-            handObj.transform.position = pinchPoint.position;
             selected = true;
             angle = calculateAngle();
         }

@@ -20,7 +20,7 @@ public class CoinManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.Rotate(new Vector3(0,1,0), Time.deltaTime * 10f, Space.World);
+        this.transform.Rotate(new Vector3(0,1,0), Time.deltaTime * 20f, Space.World);
     }
     
     private void OnTriggerEnter(Collider other) {
