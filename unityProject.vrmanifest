@@ -2,13 +2,13 @@
   "source": "Unity",
   "applications": [
     {
-      "app_key": "application.generated.unity.cps643lab4.exe",
+      "app_key": "application.generated.unity.fractalexplorer.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\nabil\\OneDrive\\Documents\\Unity Projects\\Fractal-Explorer-feature-add-controls\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\nabil\\OneDrive\\Documents\\GitHub\\Fractal-Explorer\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
-          "name": "CPS643Lab4 [Testing]"
+          "name": "Fractal-Explorer [Testing]"
         }
       }
     }
