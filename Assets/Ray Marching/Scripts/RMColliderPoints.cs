@@ -4,28 +4,16 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[ExecuteInEditMode]
+[ExecuteAlways]
+[RequireComponent(typeof(Rigidbody))]
 public class RMColliderPoints : MonoBehaviour
 {
     public float colliderRadius = 1f;
+    public float verticalOffset = 0f;
     public int numPoints = 100;
 
     private List<Vector3> colliderPoints = new List<Vector3>();
-    //private List<float> collidedDis = new List<float>();
-
-    //void PopulateRandomPoints(int numPoints)
-    //{
-    //    this.colliderPoints = new List<Vector3>();
-    //    //this.collidedDis = new List<float>();
-
-    //    for (int i = 0; i < numPoints; i++)
-    //    {
-    //        Vector3 v = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-    //        Vector3 p = this.transform.position - this.colliderRadius * v.normalized;
-    //        this.colliderPoints.Add(p);
-    //        //this.collidedDis.Add(this.GetHit(p));
-    //    }
-    //}
+    private Vector3 centerPoint = Vector3.zero;
 
     void PopulateUniformPoints(int numPoints)
     {
@@ -47,16 +35,18 @@ public class RMColliderPoints : MonoBehaviour
 
     void OnDrawGizmosSelected() // For debug purposes
     {
+        this.centerPoint = this.transform.position + this.transform.up * verticalOffset;
+
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(this.transform.position, colliderRadius);
+        Gizmos.DrawWireSphere(this.centerPoint, colliderRadius);
 
         for (int i = 0; i < this.colliderPoints.Count; i++)
         {
-            Vector3 p = this.transform.position - this.colliderPoints[i];
+            Vector3 p = this.centerPoint - this.colliderPoints[i];
             float hDis = this.GetHit(p);
-            if (hDis < 0) Gizmos.color = Color.blue;
+            if (hDis < 0) Gizmos.color = Color.red;
             else Gizmos.color = Color.green;
-            Gizmos.DrawSphere(this.transform.position - this.colliderPoints[i], 0.1f);
+            Gizmos.DrawSphere(this.centerPoint - this.colliderPoints[i], 0.05f);
         }
     }
 
@@ -65,19 +55,22 @@ public class RMColliderPoints : MonoBehaviour
         PopulateUniformPoints(this.numPoints);
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        Vector3 moveAmount = Vector3.zero;
+        this.centerPoint = this.transform.position + this.transform.up * verticalOffset;
+
+        Vector3 moveDir = Vector3.zero;
         for (int i = 0; i < this.colliderPoints.Count; i++)
         {
-            Vector3 p = this.transform.position - this.colliderPoints[i];
+            Vector3 p = this.centerPoint - this.colliderPoints[i];
             float hDis = this.GetHit(p);
             if (hDis < 0)
             {
-                moveAmount += this.colliderPoints[i] * Mathf.Sign(hDis);
+                moveDir += this.colliderPoints[i] * Mathf.Sign(hDis);
             }
         }
-        this.transform.position -= moveAmount.normalized * Mathf.Min(0.5f, this.colliderRadius - this.GetHit(this.transform.position));
+        Vector3 forceAmount = -moveDir.normalized * Mathf.Min(0.5f, this.colliderRadius - this.GetHit(this.centerPoint));
+        this.GetComponent<Rigidbody>().AddForce(forceAmount*20, ForceMode.Impulse); ;
     }
 
     // from http://blog.hvidtfeldts.net/index.php/2011/08/distance-estimated-3d-fractals-iii-folding-space/
@@ -208,7 +201,7 @@ public class RMColliderPoints : MonoBehaviour
     {
         //return SDFbox(p, new Vector3(16, 16, 16));
         //return SDFsphere(p, 16);
-        return MengerSpongeFolded(p, 100f, 5);
+        return MengerSpongeFolded(p, 100f, 2);
     }
 
 }

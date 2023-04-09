@@ -87,10 +87,10 @@ Material:
     - _COLOR_3: {r: 0.24705882, g: 0.36078432, b: 0.92156863, a: 1}
     - _COLOR_4: {r: 0.23921569, g: 0.27058825, b: 0.41960785, a: 1}
     - _COLOR_5: {r: 0.5801887, g: 0.86128736, b: 1, a: 1}
-    - _COLOR_DEFAULT: {r: 0, g: 0.026535653, b: 0.23584908, a: 1}
+    - _COLOR_DEFAULT: {r: 0.01201493, g: 0.1096699, b: 0.8490566, a: 1}
     - _COLOR_OUTSIDE: {r: 0, g: 0.26427004, b: 0.5849056, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GLOW_COLOR: {r: 0, g: 0.8777206, b: 1, a: 1}
-    - _LightPos: {r: 0, g: 200, b: 0, a: 0}
+    - _GLOW_COLOR: {r: 0, g: 1, b: 0.9644842, a: 1}
+    - _LightPos: {r: 0, g: 1, b: 1.5, a: 0}
   m_BuildTextureStacks: []

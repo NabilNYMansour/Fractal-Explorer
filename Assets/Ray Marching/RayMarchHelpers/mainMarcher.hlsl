@@ -27,7 +27,7 @@ March RayMarch(float3 ro, float3 rd, float depth, int i, float3 playerPos) {
 
     while (m.disMarched < MAX_DIS) {
         p = ro + m.disMarched * rd;
-        cd = GetHit(p, i, playerPos);
+        cd = GetHit(p, i);
         if (abs(cd.dis) < e || m.disMarched >= depth || m.disMarched > MAX_DIS) break;
 
         m.disMarched += cd.dis;
@@ -44,6 +44,39 @@ March RayMarch(float3 ro, float3 rd, float depth, int i, float3 playerPos) {
     return m;
 }
 
+// From https://iquilezles.org/articles/rmshadows/
+float LightMarch(float3 hp, float3 n, float3 l, float3 lpos, float k, int i) { // SOFT shadows
+    // inits
+    float lf = 1.; // lit factor
+    float3 initPos = hp+n*HIT_EPS*5; // counting for offset
+    float3 currpos = initPos;
+    float posTOlpos = distance(currpos, lpos);
+    
+    float preDis;
+    float currDis;
+    float currDis2;
+    
+    // marching
+    for (float disCovered = 0.; disCovered < MAX_DIS;) {
+        if (disCovered > posTOlpos) break;
+        
+        currpos = initPos + l*disCovered;
+        currDis = GetHit(currpos, i).dis;
+        if (currDis < HIT_EPS) return 0.;
+        
+        currDis2 = currDis*currDis;
+        
+        float y = currDis2/(2.0*preDis);
+        float d = sqrt(currDis2-y*y);
+        
+        // lf = min(lf, k*d/max(0.0,disCovered-y));
+        lf = min(lf, k*currDis/disCovered);
+        preDis = currDis;
+        disCovered += currDis;
+    }
+    return lf;
+}
+
 // from https://www.shadertoy.com/view/MtlXR4
 float3 GetNormal(float3 pos , int i, float playerPos)
 {
@@ -54,10 +87,10 @@ float3 GetNormal(float3 pos , int i, float playerPos)
     const float3 v3 = float3(-1.0, 1.0,-1.0);
     const float3 v4 = float3( 1.0, 1.0, 1.0);
 
-	return normalize( v1*GetHit(pos + v1*eps, i, playerPos).dis + 
-					  v2*GetHit(pos + v2*eps, i, playerPos).dis + 
-					  v3*GetHit(pos + v3*eps, i, playerPos).dis + 
-					  v4*GetHit(pos + v4*eps, i, playerPos).dis );
+	return normalize( v1*GetHit(pos + v1*eps, i).dis + 
+					  v2*GetHit(pos + v2*eps, i).dis + 
+					  v3*GetHit(pos + v3*eps, i).dis + 
+					  v4*GetHit(pos + v4*eps, i).dis );
 }
 
 /*-------------UNUSED BAKED-------------*/
@@ -99,50 +132,3 @@ float3 GetNormal(float3 pos , int i, float playerPos)
 //     return m;
 // }
 /*--------------------------------------*/
-
-/*-------------UNUSED LIGHTING-------------*/
-// From https://iquilezles.org/articles/rmshadows/
-// float LightMarch(float3 hp, float3 n, float3 l, float3 lpos, float k, int i, float f) { // SOFT shadows
-//     // inits
-//     float lf = 1.; // lit factor
-//     float3 initPos = hp+n*HIT_EPS*5; // counting for offset
-//     float3 currpos = initPos;
-//     float posTOlpos = distance(currpos, lpos);
-    
-//     float preDis;
-//     float currDis;
-//     float currDis2;
-    
-//     // marching
-//     for (float disCovered = 0.; disCovered < MAX_DIS;) {
-//         if (disCovered > posTOlpos) break;
-        
-//         currpos = initPos + l*disCovered;
-//         currDis = GetHit(currpos, i, f).dis;
-//         if (currDis < HIT_EPS) return 0.;
-        
-//         currDis2 = currDis*currDis;
-        
-//         float y = currDis2/(2.0*preDis);
-//         float d = sqrt(currDis2-y*y);
-        
-//         // lf = min(lf, k*d/max(0.0,disCovered-y));
-//         lf = min(lf, k*currDis/disCovered);
-//         preDis = currDis;
-//         disCovered += currDis;
-//     }
-//     return lf;
-// }
-
-// from https://iquilezles.org/articles/normalsSDF/
-// float3 GetNormal(float3 pos, int i, float time)
-// {
-//     float3 n = float3(0, 0, 0);
-//     for(int i=0; i<4; i++)
-//     {
-//         float3 e = 0.5773*(2.0*float3((((i+3)>>1)&1),((i>>1)&1),(i&1))-1.0);
-//         n += e*GetHit(pos+e*SLOPE_EPS, i, time).dis;
-//     }
-//     return normalize(n);
-// }
-/*---------------------------------------*/

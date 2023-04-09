@@ -60,7 +60,7 @@ Shader "Unlit/RayMarcher"
 
             // Uniforms
             uniform float3 _LightPos;
-            uniform float3 _LightCol;
+            //uniform float3 _LightCol;
             uniform float3 _PlayerPos;
 
             // Material Uniforms
@@ -162,7 +162,7 @@ Shader "Unlit/RayMarcher"
                 float S = 0.;
 
                 // Glow
-                float Gpower = 1.;
+                float Gpower = 0.25;
                 float3 G = 0.;
 
                 float3 n, l, albedo; 
@@ -172,7 +172,7 @@ Shader "Unlit/RayMarcher"
                 }
                 else
                 {
-                    albedo = GetAlbedo(march.hit.id) /** OrbitTrapColoring(hp) - abs(hp / 500)*0.1*/;
+                    albedo = GetAlbedo(march.hit.id);
                 }
 
                 if (dE >= depth || dE < MAX_DIS) { // There was a hit
@@ -185,7 +185,7 @@ Shader "Unlit/RayMarcher"
                         float Shardness = 8.;
                         S = pow(clamp(dot(n,l), 0., 1.), Shardness);
 
-                        float glow = float(march.steps)/float(MAX_STEPS);
+                        float glow = float(march.disMarched)/float(MAX_STEPS);
                         G = glow * _GLOW_COLOR;
                     }
                     
@@ -196,15 +196,13 @@ Shader "Unlit/RayMarcher"
                     G *= Gpower;
 
                     // Shadow
-                    //D *= LightMarch(hp, n, l, _LightPos, 16, details, _FOLD_PARAM);
+                    //D *= LightMarch(hp, n, l, _LightPos, 16, details);
 
-                    return G + _LightCol * albedo * (A + D + S);
-                    //return albedo * (A + D + S);
-                    //return n;
+                    return G + albedo * (A + D + S);
                 } else {
                     if (dE > MAX_DIS) { 
-                        float glow = float(march.steps) / float(MAX_STEPS);
-                        G = glow * _GLOW_COLOR;
+                        float glow = float(march.disMarched) / float(MAX_STEPS);
+                        G = glow * _GLOW_COLOR * Gpower;
                         return G; 
                     }
                     else return albedo;
