@@ -22,9 +22,10 @@ public class CoinManager : MonoBehaviour
     {
         this.transform.Rotate(new Vector3(0,1,0), Time.deltaTime * 20f, Space.World);
     }
-    
+
     private void OnTriggerEnter(Collider other) {
-        if (collectEvent != null){
+        Debug.Log(other.name);
+        if (collectEvent != null ){
             collectEvent.Invoke();
         }
         Destroy(gameObject);
