@@ -20,6 +20,7 @@ public class JoystickDriver : MonoBehaviour
 
     private float angle;
     public bool selected = false;
+    private bool allowControls = false;
 
 
 
@@ -27,10 +28,18 @@ public class JoystickDriver : MonoBehaviour
     void Start()
     {
         shipRb = ship.GetComponent<Rigidbody>();
-        
     }
 
-    
+    private void OnEnable() {
+        GameSingleton.gameStart += setAllowControls;
+    }
+    private void OnDisable() {
+        GameSingleton.gameStart += setAllowControls;
+    }
+
+    public void setAllowControls(){
+        allowControls = true;
+    }
     private void FixedUpdate() {
         if (selected && gripClick.GetStateUp(handType)){
             selected = false;
@@ -38,15 +47,19 @@ public class JoystickDriver : MonoBehaviour
 
             shipRb.velocity = new Vector3(0,0,0);
             shipRb.angularVelocity = new Vector3(0,0,0);
+            lever.transform.localRotation = Quaternion.identity;
+            
         }
   
         if (selected && gripClick.GetState(handType)){
             angle = calculateAngle();
             handObj.transform.position = pinchPoint.position;
         
- 
-            shipRb.AddTorque(ship.transform.up * -angle * 2);
-            shipRb.velocity = ship.transform.forward * 5f;
+            if (allowControls){
+                shipRb.AddTorque(ship.transform.up * -angle * 2);
+                shipRb.velocity = ship.transform.forward * 5f;
+            }
+
             lever.transform.Rotate(new Vector3(0,0,1), angle);
         }
 
@@ -58,7 +71,7 @@ public class JoystickDriver : MonoBehaviour
     }
 
     private void OnTriggerStay(Collider other) {
-        if (gripClick.GetStateDown(handType) && other.name == "SteerTop"){
+        if (gripClick.GetStateDown(handType) && other.name == "SteerTop" ){
             selected = true;
             angle = calculateAngle();
         }

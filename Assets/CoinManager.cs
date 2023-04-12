@@ -24,8 +24,7 @@ public class CoinManager : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        Debug.Log(other.name);
-        if (collectEvent != null ){
+        if (collectEvent != null && other.name == "PlayerParent"){
             collectEvent.Invoke();
         }
         Destroy(gameObject);

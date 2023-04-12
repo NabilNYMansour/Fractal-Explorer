@@ -16,11 +16,10 @@ public class AstroidController : MonoBehaviour
     }
 
     private void FixedUpdate() {
-            transform.RotateAround(new Vector3(0,0,0), targetDir, 10f * Time.deltaTime);
+        transform.RotateAround(new Vector3(0,0,0), targetDir, 10f * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other) {
-        Debug.Log(other.name);
         if (damageEvent != null && other.name == "PlayerParent"){
             damageEvent.Invoke();
         }

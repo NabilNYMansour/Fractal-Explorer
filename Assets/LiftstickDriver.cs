@@ -13,27 +13,35 @@ public class LiftstickDriver : MonoBehaviour
     public Transform baseHandle;
     public SteamVR_Input_Sources handType;
     public SteamVR_Action_Boolean gripClick;
-    // public Hand handRef;
 
     public GameObject handObj;
     public Transform pinchPoint;
 
     private float angle;
     public bool selected = false;
-
+    private bool allowControls = false;
   
 
     // Start is called before the first frame update
     void Start()
     {
         shipRb = ship.GetComponent<Rigidbody>();
-        
     }
 
+    private void OnEnable() {
+        GameSingleton.gameStart += setAllowControls;
+    }
+    private void OnDisable() {
+        GameSingleton.gameStart += setAllowControls;
+    }
+    public void setAllowControls(){
+        allowControls = true;
+    }
     private void FixedUpdate() {
         if (selected && gripClick.GetStateUp(handType)){
             selected = false;
             handObj.transform.position = transform.position;
+            lever.transform.localRotation = Quaternion.identity;
 
             shipRb.angularVelocity = new Vector3(0,0,0);
         }
@@ -41,9 +49,11 @@ public class LiftstickDriver : MonoBehaviour
             angle = calculateAngle();
             handObj.transform.position = pinchPoint.position;
         
- 
-            shipRb.AddTorque(ship.transform.right * -angle * 2);
+            if (allowControls){
+                shipRb.AddTorque(ship.transform.right * -angle * 2);
+            }
             lever.transform.Rotate(new Vector3(0,0,1), angle);
+
         }
 
     }
