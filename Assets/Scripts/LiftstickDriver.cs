@@ -42,7 +42,7 @@ public class LiftstickDriver : MonoBehaviour
             selected = false;
             handObj.transform.position = transform.position;
             lever.transform.localRotation = Quaternion.identity;
-
+            lever.transform.Rotate(new Vector3(0,1,0), -90);
             shipRb.angularVelocity = new Vector3(0,0,0);
         }
         if (selected && gripClick.GetState(handType)){

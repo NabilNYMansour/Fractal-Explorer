@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.fractalexplorer.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\nabil\\OneDrive\\Documents\\GitHub\\Fractal-Explorer\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "D:\\Users\\samee\\Documents\\GitHub\\Fractal-Explorer\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "Fractal-Explorer [Testing]"

@@ -14,6 +14,8 @@ public class GameSingleton : MonoBehaviour
     public Transform ship;
     public Material rayMarcherMat;
     public Material blackMat;
+    public Material portalMat;
+
     public GameObject portalExit;
     public GameObject gameStartUI;
 
@@ -22,6 +24,7 @@ public class GameSingleton : MonoBehaviour
     public AudioClip coinPickup;
     public AudioClip hitNoise;
     public AudioClip portalSpawn;
+    public AudioClip hyperspace;
 
 
     private int totalCollected = 0;
@@ -36,6 +39,8 @@ public class GameSingleton : MonoBehaviour
         scoreText.text = "";
         healthText.text = "";
         missionText.text = "Smash the yellow button down to start!";
+
+        source.volume = 0.2f;
 
         Material[] materialsArray = new Material[2];
         materialsArray[0] = rayMarcherMat;
@@ -125,6 +130,12 @@ public class GameSingleton : MonoBehaviour
     }
 
     void endEvent(){
+        Material[] materialsArray = new Material[2];
+        materialsArray[0] = rayMarcherMat;
+        materialsArray[1] = portalMat;
+        shipScreen.materials = materialsArray;
+        source.volume = 0.5f;
+        source.PlayOneShot(hyperspace);
         StartCoroutine(endGame());
     }
 
@@ -135,7 +146,6 @@ public class GameSingleton : MonoBehaviour
         allCoins = GameObject.FindGameObjectsWithTag("collectible");
         if (totalCollected == maxCoins){
             initExitPortal();
-            source.PlayOneShot(portalSpawn);
 
         }
         else{
@@ -146,6 +156,7 @@ public class GameSingleton : MonoBehaviour
     void initExitPortal(){
         portalExit.SetActive(true);
         missionText.text = "ESCAPE NOW! Follow the yellow arrow to the exit!";
+        source.PlayOneShot(portalSpawn);
     }
 
     void onAstroidHit(){
@@ -168,9 +179,8 @@ public class GameSingleton : MonoBehaviour
     } 
 
        IEnumerator endGame(){
-        themeSource.Stop();
         missionText.text = "Thank you for playing! Restarting level now...";
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(8);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
