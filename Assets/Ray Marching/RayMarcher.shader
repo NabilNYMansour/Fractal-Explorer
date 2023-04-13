@@ -229,6 +229,7 @@ Shader "Unlit/RayMarcher"
 
                 fixed4 col = 0;
                 col.rgb = GetPixel(ro, rd, depth, i.grabPos);
+                //col.rgb = tex2Dproj(_BackgroundTexture, i.grabPos).rgb;
                 
                 return col;
             }
