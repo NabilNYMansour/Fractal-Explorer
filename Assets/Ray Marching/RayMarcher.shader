@@ -1,6 +1,5 @@
 Shader "Unlit/RayMarcher"
 
-// made by Nabil Mansour, proprietary license
 {
     Properties
     {
